@@ -18,7 +18,7 @@ Partial Class Monitor
     Private Sub Monitor_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
         Try
             Listener.Stop()
-        Catch SException As SocketException
+        Catch
         End Try
     End Sub
 
