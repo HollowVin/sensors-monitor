@@ -32,7 +32,7 @@
             <br />
             <div id="DivSensorValues">
                 <asp:ListBox ID="ListBoxSensors" runat="server" Height="146px" Width="244px"></asp:ListBox>
-                <textarea id="TextAreaLog" cols="20" name="S1" runat="server"></textarea></div>
+                <asp:TextBox ID="TextLog" runat="server" Height="136px" Width="188px"></asp:TextBox>
         </div>
     </form>
 </body>

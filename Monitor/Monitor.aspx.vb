@@ -41,7 +41,7 @@ Partial Class Monitor
 
     Private Sub EstablishListener()
         Dim ipHostInfo As IPHostEntry = Dns.GetHostEntry(Dns.GetHostName())
-        Dim ipAddress As IPAddress = ipHostInfo.AddressList(0)
+        Dim ipAddress As IPAddress = ipHostInfo.AddressList(1)
         Dim localEndPoint As New IPEndPoint(ipAddress, 11000)
         Dim port As Integer = 23
 
@@ -75,7 +75,7 @@ Partial Class Monitor
     End Sub
 
     Private Sub UpdateStatus(ByVal Status As String)
-        TextAreaLog.InnerText += Status + "\n"
+        TextLog.Text += Status + "\n"
     End Sub
 
 End Class
