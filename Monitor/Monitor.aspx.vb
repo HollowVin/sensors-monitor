@@ -6,26 +6,17 @@ Imports Client
 Partial Class Monitor
     Inherits System.Web.UI.Page
 
-    Private Listener As TcpListener
-    Private ConnectedSensors As New Hashtable()
+    Private Shared Listener As TcpListener
+    Private Shared ConnectedSensors As Hashtable
+    Private Shared Status As String
+    Private Shared Data As String
 
     Private Sub Monitor_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim ListenThread = New Threading.Thread(AddressOf DoListen)
-        ListenThread.Start()
-    End Sub
-
-    Private Sub Monitor_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
-        Try
-            Listener.Stop()
-        Catch
-        End Try
-    End Sub
-
-    Private Sub Monitor_Unload(sender As Object, e As EventArgs) Handles Me.Disposed
-        Try
-            Listener.Stop()
-        Catch
-        End Try
+        If Not Page.IsPostBack Then
+            ConnectedSensors = New Hashtable()
+            Dim ListenThread = New Threading.Thread(AddressOf DoListen)
+            ListenThread.Start()
+        End If
     End Sub
 
     Private Sub DoListen()
@@ -39,12 +30,13 @@ Partial Class Monitor
                 AddHandler x.ValueReceived, AddressOf OnLineReceived
 
                 ConnectedSensors.Add(x.ID, x)
+                UpdateStatus("Temperature sensor connected")
 
                 LabelNSensors.Text = ConnectedSensors.Values.Count
 
             Loop Until False
         Catch E As Exception
-            Console.WriteLine(E.ToString())
+            System.Diagnostics.Debug.WriteLine(E.ToString())
         End Try
     End Sub
 
@@ -71,8 +63,9 @@ Partial Class Monitor
         ConnectedSensors.Remove(sender.ID)
     End Sub
 
-    Private Sub OnLineReceived(ByVal sender As Client, ByVal Data As String)
-        UpdateStatus("Line:" & Data)
+    Private Sub OnLineReceived(ByVal sender As Client, ByVal ReceivedData As String)
+        UpdateStatus("Line:" & ReceivedData)
+        Data = ReceivedData
 
         'Dim objClient As Client
         'Dim d As DictionaryEntry
@@ -83,7 +76,13 @@ Partial Class Monitor
         'Next
     End Sub
 
-    Private Sub UpdateStatus(ByVal Status As String)
-        TextLog.Text = Status
+    Private Sub UpdateStatus(ByVal Stat As String)
+        Status = Stat
+    End Sub
+
+    Protected Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        LabelNSensors.Text = ConnectedSensors.Values.Count
+        LabelStatus.Text = Status
+        Table1.Rows(1).Cells(1).Text = Data
     End Sub
 End Class

@@ -1,0 +1,18 @@
+﻿body {
+    margin:0px;
+    border:0px;
+    padding:0px;
+}
+.newStyle1 {
+    padding-top: 75px;
+    padding-left: 40px;
+    font-family: "Eras Bold ITC";
+    font-size: xx-large;
+    background-color: mediumslateblue;
+    color: rgb(230, 230, 230);
+}
+.content {
+    background-color: #CCCCFF;
+    font-family: "Century Gothic";
+    padding-left: 40px;
+}
