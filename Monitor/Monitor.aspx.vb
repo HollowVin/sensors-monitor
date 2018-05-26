@@ -21,6 +21,13 @@ Partial Class Monitor
         End Try
     End Sub
 
+    Private Sub Monitor_Unload(sender As Object, e As EventArgs) Handles Me.Disposed
+        Try
+            Listener.Stop()
+        Catch
+        End Try
+    End Sub
+
     Private Sub DoListen()
         Try
             EstablishListener()
@@ -30,12 +37,14 @@ Partial Class Monitor
                 AddHandler x.Connected, AddressOf OnConnected
                 AddHandler x.Disconnected, AddressOf OnDisconnected
                 AddHandler x.ValueReceived, AddressOf OnLineReceived
+
                 ConnectedSensors.Add(x.ID, x)
 
                 LabelNSensors.Text = ConnectedSensors.Values.Count
 
             Loop Until False
-        Catch
+        Catch E As Exception
+            Console.WriteLine(E.ToString())
         End Try
     End Sub
 

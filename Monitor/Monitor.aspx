@@ -29,10 +29,16 @@
             Connected Sensors:
             <asp:Label ID="LabelNSensors" runat="server"></asp:Label>
             <br />
+            <asp:ScriptManager ID="ScriptManager1" runat="server">
+            </asp:ScriptManager>
+            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                <ContentTemplate>
+                    <asp:ListBox ID="ListBoxSensors" runat="server" Height="146px" Width="244px"></asp:ListBox>
+                    <asp:TextBox ID="TextLog" runat="server" Height="136px" Width="188px"></asp:TextBox>
+                </ContentTemplate>
+            </asp:UpdatePanel>
             <br />
             <div id="DivSensorValues">
-                <asp:ListBox ID="ListBoxSensors" runat="server" Height="146px" Width="244px"></asp:ListBox>
-                <asp:TextBox ID="TextLog" runat="server" Height="136px" Width="188px"></asp:TextBox>
         </div>
     </form>
 </body>
