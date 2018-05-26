@@ -84,7 +84,6 @@ Partial Class Monitor
     End Sub
 
     Private Sub UpdateStatus(ByVal Status As String)
-        TextLog.Text += Status + "\n"
+        TextLog.Text = Status
     End Sub
-
 End Class
