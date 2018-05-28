@@ -41,7 +41,7 @@
                     <asp:Label ID="LabelStatus" runat="server"></asp:Label>
                     <br />
                     <br />
-                    <asp:Table ID="Table1" runat="server" GridLines="Both" Width="329px">
+                    <asp:Table ID="TableSensors" runat="server" GridLines="Both" Width="329px">
                         <asp:TableRow runat="server" Font-Bold="True">
                             <asp:TableCell runat="server">Sensor</asp:TableCell>
                             <asp:TableCell runat="server">Value</asp:TableCell>

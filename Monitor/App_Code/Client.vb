@@ -6,11 +6,13 @@ Public Class Client
     Public Event Connected(ByVal Sender As Client)
     Public Event Disconnected(ByVal Sender As Client)
     Public Event ValueReceived(ByVal Sender As Client, ByVal Data As String)
+    Public Event NameReceived(ByVal Sender As Client)
 
     Private ReceivedText As New StringBuilder()
     Private MarData(1024) As Byte
     Private TCPClient As TcpClient
     Private MGuid As Guid = Guid.NewGuid()
+    Public Property Name As String
 
     Public ReadOnly Property ID() As String
         Get
@@ -18,10 +20,20 @@ Public Class Client
         End Get
     End Property
 
+    Public ReadOnly Property Client() As TcpClient
+        Get
+            Return TCPClient
+        End Get
+    End Property
+
     Public Sub New(ByVal Client As TcpClient)
         TCPClient = Client
         RaiseEvent Connected(Me)
         TCPClient.GetStream.BeginRead(MarData, 0, 1024, AddressOf DoReceive, Nothing)
+    End Sub
+
+    Private Sub ReceiveName(ByVal Ar As IAsyncResult)
+
     End Sub
 
     Private Sub DoReceive(ByVal Ar As IAsyncResult)
@@ -54,8 +66,16 @@ Public Class Client
 
         For intIndex = offset To offset + count - 1
             If Bytes(intIndex) = 13 Then
-                RaiseEvent ValueReceived(Me, ReceivedText.ToString)
+
+                If Name Is Nothing Then
+                    Name = ReceivedText.ToString()
+                    RaiseEvent NameReceived(Me)
+                Else
+                    RaiseEvent ValueReceived(Me, ReceivedText.ToString)
+                End If
+
                 ReceivedText = New StringBuilder()
+
             Else
                 ReceivedText.Append(ChrW(Bytes(intIndex)))
             End If

@@ -28,6 +28,7 @@ Partial Class Monitor
                 AddHandler x.Connected, AddressOf OnConnected
                 AddHandler x.Disconnected, AddressOf OnDisconnected
                 AddHandler x.ValueReceived, AddressOf OnLineReceived
+                AddHandler x.NameReceived, AddressOf OnNameReceived
 
                 ConnectedSensors.Add(x.ID, x)
                 UpdateStatus("Temperature sensor connected")
@@ -76,6 +77,18 @@ Partial Class Monitor
         'Next
     End Sub
 
+    Private Sub OnNameReceived(ByVal Sender As Client)
+        Dim NewSensorRow As New TableRow()
+        Dim SensorNameCell, SensorValueCell As New TableCell()
+
+        SensorNameCell.Text = Sender.Name
+        SensorValueCell.Text = "(N/A)"
+
+        NewSensorRow.Cells.Add(SensorNameCell)
+        NewSensorRow.Cells.Add(SensorValueCell)
+        TableSensors.Rows.Add(NewSensorRow)
+    End Sub
+
     Private Sub UpdateStatus(ByVal Stat As String)
         Status = Stat
     End Sub
@@ -83,6 +96,6 @@ Partial Class Monitor
     Protected Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         LabelNSensors.Text = ConnectedSensors.Values.Count
         LabelStatus.Text = Status
-        Table1.Rows(1).Cells(1).Text = Data
+        TableSensors.Rows(1).Cells(1).Text = Data
     End Sub
 End Class
