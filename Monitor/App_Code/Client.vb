@@ -12,7 +12,9 @@ Public Class Client
     Private MarData(1024) As Byte
     Private TCPClient As TcpClient
     Private MGuid As Guid = Guid.NewGuid()
+
     Public Property Name As String
+    Public Property LastValue As String
 
     Public ReadOnly Property ID() As String
         Get
@@ -71,7 +73,7 @@ Public Class Client
                     Name = ReceivedText.ToString()
                     RaiseEvent NameReceived(Me)
                 Else
-                    RaiseEvent ValueReceived(Me, ReceivedText.ToString)
+                    LastValue = ReceivedText.ToString()
                 End If
 
                 ReceivedText = New StringBuilder()

@@ -42,14 +42,6 @@
                     <br />
                     <br />
                     <asp:Table ID="TableSensors" runat="server" GridLines="Both" Width="329px">
-                        <asp:TableRow runat="server" Font-Bold="True">
-                            <asp:TableCell runat="server">Sensor</asp:TableCell>
-                            <asp:TableCell runat="server">Value</asp:TableCell>
-                        </asp:TableRow>
-                        <asp:TableRow runat="server">
-                            <asp:TableCell runat="server">Temperature</asp:TableCell>
-                            <asp:TableCell runat="server">(N/A)</asp:TableCell>
-                        </asp:TableRow>
                     </asp:Table>
                     <br />
                     <asp:Timer ID="Timer1" runat="server" Interval="1000">

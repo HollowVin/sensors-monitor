@@ -7,13 +7,12 @@ Partial Class Monitor
     Inherits System.Web.UI.Page
 
     Private Shared Listener As TcpListener
-    Private Shared ConnectedSensors As Hashtable
+    Private Shared ConnectedSensors As New Dictionary(Of Client, TableRow)
     Private Shared Status As String
     Private Shared Data As String
 
     Private Sub Monitor_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not Page.IsPostBack Then
-            ConnectedSensors = New Hashtable()
             Dim ListenThread = New Threading.Thread(AddressOf DoListen)
             ListenThread.Start()
         End If
@@ -29,11 +28,6 @@ Partial Class Monitor
                 AddHandler x.Disconnected, AddressOf OnDisconnected
                 AddHandler x.ValueReceived, AddressOf OnLineReceived
                 AddHandler x.NameReceived, AddressOf OnNameReceived
-
-                ConnectedSensors.Add(x.ID, x)
-                UpdateStatus("Temperature sensor connected")
-
-                LabelNSensors.Text = ConnectedSensors.Values.Count
 
             Loop Until False
         Catch E As Exception
@@ -60,8 +54,8 @@ Partial Class Monitor
     End Sub
 
     Private Sub OnDisconnected(ByVal sender As Client)
-        UpdateStatus("Sensor disconnected")
-        ConnectedSensors.Remove(sender.ID)
+        UpdateStatus(sender.Name + " sensor disconnected")
+        ConnectedSensors.Remove(sender)
     End Sub
 
     Private Sub OnLineReceived(ByVal sender As Client, ByVal ReceivedData As String)
@@ -78,15 +72,18 @@ Partial Class Monitor
     End Sub
 
     Private Sub OnNameReceived(ByVal Sender As Client)
-        Dim NewSensorRow As New TableRow()
-        Dim SensorNameCell, SensorValueCell As New TableCell()
+        Dim SensorTableRow As New TableRow()
+        Dim SensorNameCell As New TableCell()
+        Dim SensorValueCell As New TableCell()
 
         SensorNameCell.Text = Sender.Name
         SensorValueCell.Text = "(N/A)"
 
-        NewSensorRow.Cells.Add(SensorNameCell)
-        NewSensorRow.Cells.Add(SensorValueCell)
-        TableSensors.Rows.Add(NewSensorRow)
+        SensorTableRow.Cells.Add(SensorNameCell)
+        SensorTableRow.Cells.Add(SensorValueCell)
+
+        ConnectedSensors.Add(Sender, SensorTableRow)
+        UpdateStatus(Sender.Name + " sensor connected")
     End Sub
 
     Private Sub UpdateStatus(ByVal Stat As String)
@@ -96,6 +93,17 @@ Partial Class Monitor
     Protected Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         LabelNSensors.Text = ConnectedSensors.Values.Count
         LabelStatus.Text = Status
-        TableSensors.Rows(1).Cells(1).Text = Data
+
+        For Each TableRow In TableSensors.Rows
+            TableSensors.Rows.Remove(TableRow)
+        Next
+
+        For Each Sensor In ConnectedSensors
+            Dim Index = TableSensors.Rows.Add(Sensor.Value)
+            TableSensors.Rows(Index).Cells(1).Text = Sensor.Key.LastValue
+
+            LabelStatus.Text = Sensor.Key.LastValue
+        Next
+
     End Sub
 End Class
